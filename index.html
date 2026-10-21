@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gift Radar</title>
+<style>
+  html,body{margin:0;height:100%;background:#0a0c11;color:#8a93a6;font:15px -apple-system,Segoe UI,Roboto,sans-serif}
+  .c{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+  .s{width:28px;height:28px;border:3px solid #23293a;border-top-color:#3b8beb;border-radius:50%;animation:r .8s linear infinite}
+  @keyframes r{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="c"><div class="s"></div><div id="t">Открываем Gift Radar…</div></div>
+<script>
+// Постоянный адрес приложения: берём текущий адрес сервера и переходим туда,
+// сохраняя параметры и данные Telegram (они в hash).
+(async function () {
+  var api = 'https://api.github.com/repos/cloudfy01-sys/giftradar-app/contents/url.txt';
+  var url = null;
+  try {
+    var r = await fetch(api + '?t=' + Date.now(), { headers: { Accept: 'application/vnd.github.raw' }, cache: 'no-store' });
+    if (r.ok) url = (await r.text()).trim();
+  } catch (e) {}
+  if (!url) {
+    try { url = (await (await fetch('url.txt?t=' + Date.now(), { cache: 'no-store' })).text()).trim(); } catch (e) {}
+  }
+  if (url && /^https:\/\//.test(url)) {
+    location.replace(url.replace(/\/$/, '') + '/' + location.search + location.hash);
+  } else {
+    document.getElementById('t').textContent = 'Сервер Gift Radar сейчас недоступен. Попробуй через минуту.';
+  }
+})();
+</script>
+</body>
+</html>
